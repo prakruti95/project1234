@@ -13,6 +13,7 @@ import 'package:project1/user/onboardingscreen/widgets/pages/work/work_dark_card
 import 'package:project1/user/onboardingscreen/widgets/pages/work/work_light_card_content.dart';
 import 'package:project1/user/onboardingscreen/widgets/pages/work/work_text_column.dart';
 import '../../constants.dart';
+import '../loginscreen/login.dart';
 
 class OnboardingScreen  extends StatefulWidget
 {
@@ -53,8 +54,8 @@ class _OnboardingState extends State<OnboardingScreen >
   }
 
   _goToLogin() {
-   // Navigator.pushReplacement(
-      //  context, MaterialPageRoute(builder: (context) => Login()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Login()));
      // Navigator.pushReplacement(
      //     context, MaterialPageRoute(builder: (context) => AdminLoginScreen()));
 
