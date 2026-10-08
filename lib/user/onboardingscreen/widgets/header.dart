@@ -10,25 +10,28 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Ink.image(
-          image: AssetImage('assets/logo.png'),
-          height: 50,
-          width: 50,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.00,right: 15.00),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Ink.image(
+            image: AssetImage('assets/logo.png'),
+            height: 50,
+            width: 50,
+          ),
 
-        GestureDetector(
-          onTap: onSkip,
-          child: Text(
-            'Skip',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: kLightGold,
+          GestureDetector(
+            onTap: onSkip,
+            child: Text(
+              'Skip',
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: kLightGold,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

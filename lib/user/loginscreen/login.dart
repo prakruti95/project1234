@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:project1/user/loginscreen/widgets/custom_clippers/brown_top_clipper.dart';
 import 'package:project1/user/loginscreen/widgets/custom_clippers/gold_top_clipper.dart';
 import 'package:project1/user/loginscreen/widgets/custom_clippers/lightgold_top_clipper.dart';
+import 'package:project1/user/loginscreen/widgets/header.dart' show Header;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants.dart';
 import 'package:http/http.dart' as http;
 
-import '../onboardingscreen/widgets/header.dart';
+import '../dashboard/dashboard_screen.dart';
+
 import '../register/register.dart';
 
 class Login extends StatefulWidget
@@ -66,7 +68,7 @@ class _LoginState extends State<Login>
               padding: const EdgeInsets.symmetric(vertical: kPaddingL),
               child: Column(
                 children: [
-                  Header(onSkip: () {  },),
+                  Header(),
                   //Spacer(),
 
                   Padding(
@@ -77,14 +79,43 @@ class _LoginState extends State<Login>
                       children: [
                         SizedBox(height: space * 7),
 
+
+
+
                         Text('Login here using your username and password.',
                           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: kDarkBrown.withOpacity(0.7)),
                         ),
 
                         SizedBox(height: space-5),
 
+                        // TextField(
+                        //   controller: username,
+                        //   decoration: InputDecoration(
+                        //     contentPadding: const EdgeInsets.all(kPaddingS),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                        //     ),
+                        //     hintText: 'Username',
+                        //     hintStyle: TextStyle(
+                        //       color: kBlack.withOpacity(0.5),
+                        //       fontWeight: FontWeight.w500,
+                        //     ),
+                        //     prefixIcon: Icon(
+                        //       Icons.person,
+                        //       color: kBlack.withOpacity(0.5),
+                        //     ),
+                        //   ),
+                        // ),
+
+
+                        SizedBox(height: space-7),
+
                         TextField(
-                          controller: username,
+                          controller: mobileno,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(kPaddingS),
                             focusedBorder: OutlineInputBorder(
@@ -93,19 +124,20 @@ class _LoginState extends State<Login>
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                             ),
-                            hintText: 'Username',
+                            hintText: 'Mobile Number',
                             hintStyle: TextStyle(
                               color: kBlack.withOpacity(0.5),
                               fontWeight: FontWeight.w500,
                             ),
                             prefixIcon: Icon(
-                              Icons.person,
+                              Icons.phone,
                               color: kBlack.withOpacity(0.5),
                             ),
                           ),
                         ),
 
                         SizedBox(height: space-7),
+
 
                         TextField(
                           controller: password,
@@ -136,31 +168,6 @@ class _LoginState extends State<Login>
                             ),
                           ),
                           obscureText: _isObscurePassword,
-                        ),
-
-                        SizedBox(height: space-7),
-
-                        TextField(
-                          controller: mobileno,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(kPaddingS),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            ),
-                            hintText: 'Mobile Number',
-                            hintStyle: TextStyle(
-                              color: kBlack.withOpacity(0.5),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.phone,
-                              color: kBlack.withOpacity(0.5),
-                            ),
-                          ),
                         ),
 
                         SizedBox(height: space-7),
@@ -248,7 +255,7 @@ class _LoginState extends State<Login>
 
    checklogin()async
   {
-    var url = Uri.parse("https://prakrutitech.xyz/FlutterProject/login.php");
+    var url = Uri.parse("https://shivaay.us.cc/Project/login.php");
     var response = await http.post(url, body:
     {
       "mobileno": mobileno.text.toString(),
@@ -265,7 +272,7 @@ class _LoginState extends State<Login>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Success")));
       sharedPreferences.setBool('tops', false);
       sharedPreferences.setString('mymob', mobileno.text.toString());
-      //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => DashboardScreen()));
+      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => DashboardScreen()));
     }
   }
 
@@ -276,7 +283,7 @@ class _LoginState extends State<Login>
 
     if (newuser == false)
     {
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
     }
   }
 }
