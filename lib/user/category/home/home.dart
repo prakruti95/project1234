@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants.dart';
+import '../category.dart';
+
 
 class Home extends StatefulWidget
 {
@@ -158,7 +160,7 @@ class Items extends StatelessWidget
                 return InkWell(
                   onTap: ()
                   {
-                    //Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Category(index: list[index]['id'],category_name: list[index]['category_name'])));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Category(index: list[index]['id'],category_name: list[index]['category_name'])));
                   },
                   child: Card(
                     elevation: 3,
