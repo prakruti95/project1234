@@ -1,10 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 //import 'package:share_plus/share_plus.dart' show Share;
 import '../../../constants.dart';
+import 'categoryDB.dart';
+import 'categoryDBModel.dart';
 
 
 class Category extends StatefulWidget
@@ -84,26 +92,27 @@ class ItemsState extends State<Items> {
   List list;
   var size;
 
-  //DB db = DB();
+  DB db = DB();
   String savePath = "";
 
   @override
   void initstate() {
-   // db = DB();
+    db = DB();
   }
 
   ItemsState({required this.list, this.size});
 
   Future<void> _share(url) async
   {
-    // String fileName = url.substring(url.lastIndexOf("/") + 1);
-    // final uri = Uri.parse(url);
-    // final res = await http.get(uri);
-    // final bytes = res.bodyBytes;
-    // final temp = await getTemporaryDirectory();
-    // final path = '${temp.path}/$fileName';
-    // File(path).writeAsBytesSync(bytes);
-    // await Share.shareFiles([path]);
+    String fileName = url.substring(url.lastIndexOf("/") + 1);
+    final uri = Uri.parse(url);
+    final res = await http.get(uri);
+    final bytes = res.bodyBytes;
+    final temp = await getTemporaryDirectory();
+    final path = '${temp.path}/$fileName';
+    File(path).writeAsBytesSync(bytes);
+    
+    await Share.shareXFiles([XFile(path)]);
   }
 
   @override
@@ -122,7 +131,7 @@ class ItemsState extends State<Items> {
               child: Column(
                 children: [
                   Image.network(
-                    list[index]['c_images'],
+                    list[index]['category_img'],
                     errorBuilder: (BuildContext context, Object exception,
                         StackTrace? stackTrace) {
                       return SizedBox(
@@ -167,14 +176,14 @@ class ItemsState extends State<Items> {
                         SizedBox(width: size.width * 10 / 100),
                         InkWell(
                           onTap: () {
-                            _share(list[index]['c_images']);
+                            _share(list[index]['category_img']);
                           },
                           child: Icon(Icons.share, color: Colors.white),
                         ),
                         SizedBox(width: size.width * 17 / 95),
                         InkWell(
                           onTap: () {
-                            //_save(list[index]['c_images']);
+                            _save(list[index]['c_images']);
                           },
                           child: Icon(Icons.download, color: Colors.white),
                         ),
@@ -188,55 +197,55 @@ class ItemsState extends State<Items> {
     );
   }
 
-  // void _save(var url) async
-  // {
-  //   var status = await Permission.manageExternalStorage.request();
-  //   _onLoad(true);
-  //   if (status.isGranted)
-  //   {
-  //     Future<String> createFolderInAppDocDir(String folderName) async
-  //     {
-  //       final Directory _appDocDir = await getApplicationDocumentsDirectory();
-  //
-  //       final Directory _appDocDirFolder =
-  //       Directory('${_appDocDir.path}/$folderName/');
-  //
-  //       if (await _appDocDirFolder.exists())
-  //       {
-  //         //if folder already exists return path
-  //         return _appDocDirFolder.path;
-  //       }
-  //       else
-  //       {
-  //         //if folder not exists create folder and then return its path
-  //         final Directory _appDocDirNewFolder =
-  //         await _appDocDirFolder.create(recursive: true);
-  //         return _appDocDirNewFolder.path;
-  //       }
-  //     }
-  //
-  //     String fileName = url.substring(url.lastIndexOf("/") + 1);
-  //     savePath = 'storage/emulated/0/Pictures/$fileName';
-  //     db.insertData(CategoryModel(url: savePath));
-  //
-  //     var response = await Dio()
-  //         .get(url, options: Options(responseType: ResponseType.bytes));
-  //     ImageGallerySaverPlus.saveImage(Uint8List.fromList(response.data), name: fileName);
-  //
-  //     Fluttertoast.showToast(
-  //         msg: "Image Downloaded Successfully",
-  //         toastLength: Toast.LENGTH_LONG,
-  //         timeInSecForIosWeb: 1);
-  //
-  //     _onLoadExit(true);
-  //
-  //     print("Image Downloaded");
-  //   }
-  //   else
-  //   {
-  //     print("permission not granted");
-  //   }
-  // }
+  void _save(url) async
+  {
+    var status = await Permission.manageExternalStorage.request();
+    _onLoad(true);
+    if (status.isGranted)
+    {
+      Future<String> createFolderInAppDocDir(String folderName) async
+      {
+        final Directory _appDocDir = await getApplicationDocumentsDirectory();
+
+        final Directory _appDocDirFolder =
+        Directory('${_appDocDir.path}/$folderName/');
+
+        if (await _appDocDirFolder.exists())
+        {
+          //if folder already exists return path
+          return _appDocDirFolder.path;
+        }
+        else
+        {
+          //if folder not exists create folder and then return its path
+          final Directory _appDocDirNewFolder =
+          await _appDocDirFolder.create(recursive: true);
+          return _appDocDirNewFolder.path;
+        }
+      }
+
+      String fileName = url.substring(url.lastIndexOf("/") + 1);
+      savePath = 'storage/emulated/0/Pictures/$fileName';
+      db.insertData(CategoryModel(url: savePath));
+
+      var response = await Dio()
+          .get(url, options: Options(responseType: ResponseType.bytes));
+      ImageGallerySaverPlus.saveImage(Uint8List.fromList(response.data), name: fileName);
+
+      Fluttertoast.showToast(
+          msg: "Image Downloaded Successfully",
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIosWeb: 1);
+
+      _onLoadExit(true);
+
+      print("Image Downloaded");
+    }
+    else
+    {
+      print("permission not granted");
+    }
+  }
 
   void _onLoad(bool showBox) {
     showDialog(
